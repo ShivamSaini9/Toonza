@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fa;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    header {
+      background: #1e293b;
+      color: white;
+      padding: 2rem;
+    }
+
+    main {
+      margin-top: 3rem;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #16a34a;
+      color: white;
+    }
+
+    .features {
+      max-width: 800px;
+      margin: 3rem auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    footer {
+      margin-top: 4rem;
+      padding: 1rem;
+      background: #e5e7eb;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <h1>Welcome to Our Platform 🚀</h1>
+    <p>Create an account or login to continue</p>
+  </header>
+
+  <!-- Main CTA -->
+  <main>
+    <a href="/signup">
+      <button class="btn btn-primary">Sign Up</button>
+    </a>
+
+    <a href="/login">
+      <button class="btn btn-secondary">Login</button>
+    </a>
+  </main>
+
+  <!-- Public Info Section -->
+  <section class="features">
+    <div class="card">
+      <h3>🔐 Secure</h3>
+      <p>Authentication using JWT & cookies</p>
+    </div>
+
+    <div class="card">
+      <h3>📷 Image Upload</h3>
+      <p>Upload avatars & cover images via Cloudinary</p>
+    </div>
+
+    <div class="card">
+      <h3>⚡ Fast</h3>
+      <p>Optimized backend & database performance</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>© 2025 Your App Name</p>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f5f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #1e293b;
+      color: white;
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header img {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .logout-btn {
+      background: #dc2626;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .profile img {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin-right: 1.5rem;
+      object-fit: cover;
+    }
+
+    .profile-info h2 {
+      margin: 0;
+      color: #1e293b;
+    }
+
+    .users {
+      margin-top: 2.5rem;
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 12px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+    }
+
+    th {
+      background: #f8fafc;
+    }
+
+    tr:hover {
+      background: #f1f5f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div>
+      <strong>Dashboard</strong>
+    </div>
+
+    <div>
+      <img src="<%= user.avatar %>" alt="avatar">
+      <form action = "/api/v1/users/logout" method="POST" style="display:inline">
+        <button type = "submit" class="logout-btn">Logout</button>
+      </form>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Profile Section -->
+    <section class="profile">
+      <img src="<%= user.avatar %>" alt="Avatar">
+
+      <div class="profile-info">
+        <h2><%= user.fullName %></h2>
+        <p><strong>Email:</strong> <%= user.email %></p>
+        <p><strong>Username:</strong> <%= user.username %></p>
+      </div>
+    </section>
+
+    <!-- Registered Users List -->
+    <section class="users">
+      <h3>All Registered Users</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Avatar</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Username</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <% users.forEach(u => { %>
+            <tr>
+              <td>
+                <img src="<%= u.avatar %>" width="40" height="40" style="border-radius:50%">
+              </td>
+              <td><%= u.fullName %></td>
+              <td><%= u.email %></td>
+              <td><%= u.username %></td>
+            </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </section>
+
+  </div>
+
+</body>
+</html>

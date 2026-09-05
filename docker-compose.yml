@@ -1,0 +1,72 @@
+services:
+
+  backend:
+    build: ./backend
+    container_name: toonza-backend
+
+    ports:
+      - "4000:4000"
+
+    env_file:
+      - ./backend/.env
+
+    restart: unless-stopped
+
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+
+  redis:
+    image: redis:7-alpine
+    container_name: toonza-redis
+
+    ports:
+      - "6379:6379"
+
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    build: ./backend
+    container_name: toonza-worker
+
+    env_file:
+      - ./backend/.env
+
+    restart: unless-stopped
+
+    depends_on:
+      redis:
+        condition: service_healthy
+
+    command: npm run worker
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:4000
+
+    container_name: toonza-frontend
+
+    ports:
+      - "3000:80"
+
+    restart: unless-stopped
+
+    depends_on:
+      backend:
+        condition: service_healthy
