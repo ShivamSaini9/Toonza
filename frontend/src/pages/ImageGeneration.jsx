@@ -108,7 +108,39 @@ const ImageGeneration = () => {
        * Worker processes the image in the background.
        * We poll the job status until it's completed or failed.
        */
-      const jobId = response.data.data.jobId;
+
+      const responseData = response.data.data;
+
+      console.log("Image generation response:", responseData);
+
+      // ===============================
+      // PRODUCTION MODE
+      // ===============================
+      // Backend directly generated the image
+      if (!responseData.jobId) {
+        if (responseData.success) {
+          const res = await api.get("/api/v1/imageGroup/get-imageGroup");
+
+          setImageGroup(res.data.data || []);
+          setLoading(false);
+
+          toast.success(
+            responseData.message || "Image generated successfully!",
+          );
+
+          return;
+        }
+
+        setLoading(false);
+        toast.error(responseData.message || "Image generation failed");
+
+        return;
+      }
+
+      // ===============================
+      // LOCAL BULLMQ MODE
+      // ===============================
+      const jobId = responseData.jobId;
 
       const checkJobStatus = async () => {
         try {
@@ -124,7 +156,8 @@ const ImageGeneration = () => {
             const res = await api.get("/api/v1/imageGroup/get-imageGroup");
 
             setImageGroup(res.data.data || []);
-            setLoading(false); // NEW
+            setLoading(false);
+
             toast.success("Image generated successfully!");
 
             // Stop polling
@@ -132,7 +165,8 @@ const ImageGeneration = () => {
           }
 
           if (job.status === "failed") {
-            setLoading(false); // NEW
+            setLoading(false);
+
             toast.error(job.error || "Image generation failed");
 
             return;
@@ -142,7 +176,9 @@ const ImageGeneration = () => {
           setTimeout(checkJobStatus, 2000);
         } catch (error) {
           console.error("Job status check failed:", error);
-          setLoading(false); // NEW
+
+          setLoading(false);
+
           toast.error("Failed to check image generation status.");
         }
       };

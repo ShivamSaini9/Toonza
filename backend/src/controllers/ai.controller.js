@@ -7,6 +7,7 @@ import { Community } from "../models/community.model.js";
 import { InferenceClient } from "@huggingface/inference";
 import redisClient from "../config/redis.js";
 import imageQueue from "../queues/image.queue.js";
+import generateImageService from "../services/image-generation.service.js";
 
 import OpenAI from "openai";
 import fs from "fs";
@@ -52,34 +53,42 @@ const generateImage = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Invalid image ratio");
   }
 
-  // -----------------------------------------
-  // 4. Add job to BullMQ
-  // -----------------------------------------
-
-  const job = await imageQueue.add("generate-image", {
+  const imageData = {
     userId: userId.toString(),
     prompt: prompt.trim(),
     style,
     isPublic: Boolean(isPublic),
     ratio: ratio || "1:1",
     count: count || 1,
-  });
+  };
 
-  console.log("Image generation job added:", job.id);
+  // ==================================================
+  // DEVELOPMENT / BULLMQ
+  // ==================================================
 
-  // -----------------------------------------
-  // 5. Return job ID
-  // -----------------------------------------
+  if (process.env.USE_BULLMQ === "true") {
+    const job = await imageQueue.add("generate-image", imageData);
 
-  return res.status(202).json(
-    new ApiResponse(
-      202,
-      {
-        jobId: job.id,
-      },
-      "Image generation job added to queue"
-    )
-  );
+    console.log("Image generation job added:", job.id);
+
+    return res.status(202).json(
+      new ApiResponse(
+        202,
+        {
+          jobId: job.id,
+        },
+        "Image generation job added to queue"
+      )
+    );
+  }
+
+  // ==================================================
+  // PRODUCTION / DIRECT GENERATION
+  // ==================================================
+
+  const result = await generateImageService(imageData);
+
+  return res.status(200).json(new ApiResponse(200, result, result.message));
 });
 
 const getImageJobStatus = asyncHandler(async (req, res) => {
