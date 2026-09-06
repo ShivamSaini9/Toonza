@@ -47,6 +47,12 @@ const ImageGeneration = () => {
 
     if (loading) return;
 
+    if (user?.role !== "admin") {
+      return toast.error(
+        " We're working on making this feature available to everyone soon.",
+      );
+    }
+
     if (!formData.prompt) {
       return toast.error("Prompt is required!");
     }

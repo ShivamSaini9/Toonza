@@ -27,6 +27,13 @@ const generateImage = asyncHandler(async (req, res) => {
 
   const userId = req.user._id;
 
+  if (req.user.role !== "admin") {
+    throw new ApiError(
+      403,
+      "Image generation is currently available only to the admin."
+    );
+  }
+
   // -----------------------------------------
   // 1. Validate prompt
   // -----------------------------------------
